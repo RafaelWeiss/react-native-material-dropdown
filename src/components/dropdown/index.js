@@ -11,6 +11,7 @@ import {
   Platform,
   ViewPropTypes,
   I18nManager,
+  Keyboard
 } from 'react-native';
 import Ripple from 'react-native-material-ripple';
 import { TextField } from 'react-native-material-textfield';
@@ -198,8 +199,22 @@ export default class Dropdown extends PureComponent {
     this.mounted = true;
   }
 
+  componentWillMount(){
+    const handler = (e) => { 
+      if(this.state.modal){ 
+        setTimeout(() => { 
+          this.onPress(null)
+        }, 10); 
+      } 
+    }
+    this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow',handler)
+    this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide',handler)
+  }
+  
   componentWillUnmount() {
     this.mounted = false;
+    this.keyboardDidShowListener.remove()
+    this.keyboardDidHideListener.remove()
   }
 
   onPress(event) {
